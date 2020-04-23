@@ -1,7 +1,7 @@
 # Snippets plugin for Inkdrop
 
 [![Build Status](https://dev.azure.com/jmerle/inkdrop-snippets/_apis/build/status/Build?branchName=master)](https://dev.azure.com/jmerle/inkdrop-snippets/_build/latest?definitionId=28&branchName=master)
-[![Latest release](https://img.shields.io/github/v/release/jmerle/inkdrop-snippets)](https://my.inkdrop.app/plugins/hello-world)
+[![Latest release](https://img.shields.io/github/v/release/jmerle/inkdrop-snippets)](https://my.inkdrop.app/plugins/snippets)
 [![License](https://img.shields.io/github/license/jmerle/inkdrop-snippets)](https://github.com/jmerle/inkdrop-snippets/blob/master/LICENSE)
 
 This plugin makes it easy to create and use snippets inside Inkdrop notes.
