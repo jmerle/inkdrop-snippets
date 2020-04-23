@@ -1,8 +1,8 @@
 {
-  "name": "hello-world",
+  "name": "snippets",
   "version": "0.0.0",
-  "description": "Hello World plugin description",
-  "repository": "https://github.com/jmerle/inkdrop-hello-world",
+  "description": "Powerful snippets engine for Inkdrop",
+  "repository": "https://github.com/jmerle/inkdrop-snippets",
   "license": "MIT",
   "main": "./src/index",
   "scripts": {
