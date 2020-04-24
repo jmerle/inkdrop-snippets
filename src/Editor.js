@@ -27,9 +27,6 @@ export class Editor extends Disposable {
       .map(trigger => trigger.length)
       .sort((a, b) => b - a)[0];
 
-    // Ensure enough characters are checked when Space is used as trigger key
-    this.maxTriggerLength += 1;
-
     this.registerCommands();
   }
 
@@ -93,13 +90,10 @@ export class Editor extends Disposable {
     const cursor = this.cm.getCursor();
     const rangeStart = {
       line: cursor.line,
-      ch:
-        this.maxTriggerLength > cursor.ch
-          ? 0
-          : cursor.ch - this.maxTriggerLength,
+      ch: cursor.ch - this.maxTriggerLength,
     };
 
-    const possibleTrigger = this.cm.getRange(rangeStart, cursor).trim();
+    const possibleTrigger = this.cm.getRange(rangeStart, cursor);
 
     if (triggerToCheck !== undefined) {
       if (possibleTrigger.endsWith(triggerToCheck)) {
@@ -121,18 +115,25 @@ export class Editor extends Disposable {
   }
 
   runTrigger(trigger) {
+    this.cm.setOption('readOnly', true);
+
     this.database
       .getContent(trigger)
-      .then(content => this.replaceTrigger(trigger, content))
+      .then(content => {
+        const cursor = this.cm.getCursor();
+        const rangeStart = {
+          line: cursor.line,
+          ch: cursor.ch - trigger.length,
+        };
+
+        this.cm.replaceRange(content, rangeStart, cursor);
+      })
       .catch(err => {
         notify('Error', `Snippet '${trigger}' failed: ${err.message}`);
         console.error(err);
+      })
+      .finally(() => {
+        this.cm.setOption('readOnly', false);
       });
-  }
-
-  replaceTrigger(trigger, content) {
-    // TODO(jmerle): Implement
-    // TODO(jmerle): Ensure this doesn't break when trigger is removed before this is called
-    console.log(`Replacing '${trigger}' with '${content}'`);
   }
 }

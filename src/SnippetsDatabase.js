@@ -46,6 +46,7 @@ export class SnippetsDatabase extends Disposable {
       },
       todopromise: () => Promise.resolve('Promise success'),
       todopromiseerror: () => Promise.reject(new Error('Promise error')),
+      todolong: () => new Promise(resolve => setTimeout(resolve, 5000)),
     };
   }
 
@@ -56,16 +57,12 @@ export class SnippetsDatabase extends Disposable {
   getContent(trigger) {
     const content = this.snippets[trigger];
 
-    if (typeof content === 'string') {
-      return Promise.resolve(content);
-    }
-
     return new Promise((resolve, reject) => {
       try {
-        const result = content();
+        const result = typeof content === 'function' ? content() : content;
 
         Promise.resolve(result)
-          .then(actualContent => resolve(actualContent))
+          .then(actualContent => resolve(`${actualContent}`))
           .catch(err => {
             if (err instanceof Error) {
               reject(err);
