@@ -1,19 +1,33 @@
 'use babel';
 
 import { Disposable, CompositeDisposable } from 'event-kit';
+import { SnippetsDatabase } from './SnippetsDatabase';
 
-export class Editor extends Disposable {
+export class Controller extends Disposable {
   constructor(cm) {
     super(() => this.destroy());
 
     this.cm = cm;
     this.commandListeners = new CompositeDisposable();
+    this.database = new SnippetsDatabase();
 
-    this.registerCommands();
+    this.refresh();
   }
 
   destroy() {
     this.commandListeners.dispose();
+  }
+
+  refresh() {
+    this.commandListeners.dispose();
+    this.database.refresh();
+
+    this.triggers = this.database.getTriggers();
+    this.maxTriggerLength = this.triggers
+      .map(trigger => trigger.length)
+      .sort((a, b) => b - a)[0];
+
+    this.registerCommands();
   }
 
   registerCommands() {
@@ -33,8 +47,8 @@ export class Editor extends Disposable {
 
           // In case the callback returns false, we check if there is another
           // keybinding on the same target. In case there is, we trigger it.
-          // This makes it possible to use the Tab key to trigger templates,
-          // without making it impossible to trigger other commands with
+          // This makes it possible to use keys like Tab to trigger commands,
+          // without making it impossible to trigger other commands with it
           // it as well. This is important because the Tab key is also used by
           // several other rather important commands like `editor:indent`.
 
@@ -65,6 +79,24 @@ export class Editor extends Disposable {
   }
 
   trigger() {
+    const cursor = this.cm.getCursor();
+    const rangeStart = {
+      line: cursor.line,
+      ch:
+        this.maxTriggerLength > cursor.ch
+          ? 0
+          : cursor.ch - this.maxTriggerLength,
+    };
+
+    const possibleTrigger = this.cm.getRange(rangeStart, cursor);
+
+    for (const trigger of this.triggers) {
+      if (possibleTrigger.endsWith(trigger)) {
+        console.log(`Triggering ${trigger}`);
+        return true;
+      }
+    }
+
     return false;
   }
 }
