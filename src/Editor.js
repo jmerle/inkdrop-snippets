@@ -1,8 +1,9 @@
 'use babel';
 
 import { Disposable, CompositeDisposable } from 'event-kit';
+import { notify } from './utils';
 
-export class Controller extends Disposable {
+export class Editor extends Disposable {
   constructor(cm, database) {
     super(() => this.destroy());
 
@@ -15,11 +16,6 @@ export class Controller extends Disposable {
 
   destroy() {
     this.commandListeners.dispose();
-  }
-
-  setCodeMirror(cm) {
-    this.cm = cm;
-    this.refresh();
   }
 
   refresh() {
@@ -125,7 +121,18 @@ export class Controller extends Disposable {
   }
 
   runTrigger(trigger) {
+    this.database
+      .getContent(trigger)
+      .then(content => this.replaceTrigger(trigger, content))
+      .catch(err => {
+        notify('Error', `Snippet '${trigger}' failed: ${err.message}`);
+        console.error(err);
+      });
+  }
+
+  replaceTrigger(trigger, content) {
     // TODO(jmerle): Implement
-    console.log(`Running snippet with trigger '${trigger}'`);
+    // TODO(jmerle): Ensure this doesn't break when trigger is removed before this is called
+    console.log(`Replacing '${trigger}' with '${content}'`);
   }
 }

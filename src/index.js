@@ -1,12 +1,12 @@
 'use babel';
 
 import { CompositeDisposable } from 'event-kit';
-import { Controller } from './Controller';
+import { Editor } from './Editor';
 import { SnippetsDatabase } from './SnippetsDatabase';
 
-let subscriptions = null;
-let controller = null;
 let database = null;
+let editor = null;
+let subscriptions = null;
 
 export const config = {
   configNotes: {
@@ -24,24 +24,24 @@ export function activate() {
 
   const activeEditor = inkdrop.getActiveEditor();
   if (activeEditor !== undefined) {
-    controller = new Controller(activeEditor.cm, database);
+    editor = new Editor(activeEditor.cm, database);
   } else {
     subscriptions.add(
       inkdrop.onEditorLoad(e => {
-        controller = new Controller(e.cm, database);
+        editor = new Editor(e.cm, database);
       }),
     );
   }
 
   subscriptions.add(
     inkdrop.onEditorUnload(() => {
-      controller.dispose();
+      editor.dispose();
     }),
   );
 }
 
 export function deactivate() {
-  subscriptions.dispose();
-  controller.dispose();
   database.dispose();
+  editor.dispose();
+  subscriptions.dispose();
 }

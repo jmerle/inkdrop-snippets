@@ -38,11 +38,49 @@ export class SnippetsDatabase extends Disposable {
 
   refresh() {
     // TODO(jmerle): Implement, should refresh all snippet configs
+    this.snippets = {
+      todo: 'String success',
+      todofunction: () => 'Function success',
+      todoerror: () => {
+        throw new Error('Function error');
+      },
+      todopromise: () => Promise.resolve('Promise success'),
+      todopromiseerror: () => Promise.reject(new Error('Promise error')),
+    };
   }
 
   getTriggers() {
-    // TODO(jmerle): Implement, should return the triggers in order of priority
-    return ['todo'];
+    return Object.keys(this.snippets);
+  }
+
+  getContent(trigger) {
+    const content = this.snippets[trigger];
+
+    if (typeof content === 'string') {
+      return Promise.resolve(content);
+    }
+
+    return new Promise((resolve, reject) => {
+      try {
+        const result = content();
+
+        Promise.resolve(result)
+          .then(actualContent => resolve(actualContent))
+          .catch(err => {
+            if (err instanceof Error) {
+              reject(err);
+            } else {
+              reject(new Error(err));
+            }
+          });
+      } catch (err) {
+        if (err instanceof Error) {
+          reject(err);
+        } else {
+          reject(new Error(err));
+        }
+      }
+    });
   }
 
   createConfigNote() {
