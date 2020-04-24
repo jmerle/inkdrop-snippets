@@ -11,6 +11,8 @@ export class Editor extends Disposable {
     this.database = database;
     this.commandListeners = new CompositeDisposable();
 
+    this.database.editor = this;
+
     this.refresh();
   }
 
@@ -20,7 +22,6 @@ export class Editor extends Disposable {
 
   refresh() {
     this.commandListeners.dispose();
-    this.database.refresh();
 
     this.triggers = this.database.getTriggers();
     this.maxTriggerLength = this.triggers

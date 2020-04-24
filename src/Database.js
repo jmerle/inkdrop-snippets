@@ -2,6 +2,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as vm from 'vm';
 import { Disposable, CompositeDisposable } from 'event-kit';
 import { actions } from 'inkdrop';
 import { notify } from './utils';
@@ -11,6 +12,8 @@ const CONFIG_NOTES_KEY = 'snippets.configNotes';
 export class Database extends Disposable {
   constructor() {
     super(() => this.destroy());
+
+    this.editor = null;
 
     const configTemplatePath = '../assets/snippets-configuration.md';
     this.configTemplate = fs
@@ -36,18 +39,42 @@ export class Database extends Disposable {
     );
   }
 
-  refresh() {
-    // TODO(jmerle): Implement, should refresh all snippet configs
-    this.snippets = {
-      todo: 'String success',
-      todofunction: () => 'Function success',
-      todoerror: () => {
-        throw new Error('Function error');
-      },
-      todopromise: () => Promise.resolve('Promise success'),
-      todopromiseerror: () => Promise.reject(new Error('Promise error')),
-      todolong: () => new Promise(resolve => setTimeout(resolve, 5000)),
-    };
+  async refresh() {
+    this.snippets = {};
+
+    const db = inkdrop.main.dataStore.getLocalDB();
+    const noteIds = await this.getConfigNoteIds();
+
+    for (const noteId of noteIds) {
+      try {
+        const note = await db.notes.get(noteId);
+        const body = note.body.trim();
+
+        if (!body.startsWith('```js') || !body.endsWith('```')) {
+          notify('Error', `Note '${noteId}' is not a valid snippets config`);
+        }
+
+        const jsCode = body.substring(
+          '```js'.length,
+          body.length - '```'.length - 1,
+        );
+
+        const context = {};
+        const script = new vm.Script(`snippets = ${jsCode};`);
+        script.runInContext(vm.createContext(context));
+
+        for (const snippet of context.snippets) {
+          this.snippets[snippet.trigger.toLowerCase()] = snippet.content;
+        }
+      } catch (err) {
+        notify('Error', `Could not load snippets from note '${noteId}'`);
+        console.error(err);
+      }
+    }
+
+    if (this.editor !== null) {
+      this.editor.refresh();
+    }
   }
 
   getTriggers() {
@@ -109,12 +136,34 @@ export class Database extends Disposable {
     inkdrop.commands.dispatch(document.body, 'core:new-note');
   }
 
-  registerConfigNote(noteId) {
-    const configNotes = inkdrop.config.get(CONFIG_NOTES_KEY);
-
-    const noteIds = (configNotes || '').split(',').filter(x => x !== '');
+  async registerConfigNote(noteId) {
+    const noteIds = await this.getConfigNoteIds();
     noteIds.push(noteId);
-
     inkdrop.config.set(CONFIG_NOTES_KEY, noteIds.join(','));
+  }
+
+  async getConfigNoteIds() {
+    const db = inkdrop.main.dataStore.getLocalDB();
+
+    const configNotes = inkdrop.config.get(CONFIG_NOTES_KEY);
+    const noteIds = (configNotes || '')
+      .split(',')
+      .filter(x => db.notes.validateDocId(x));
+
+    const existingNoteIds = [];
+
+    for (const noteId of noteIds) {
+      try {
+        const note = await db.notes.get(noteId);
+        if (note.bookId !== 'trash') {
+          existingNoteIds.push(noteId);
+        }
+      } catch (err) {
+        // Do nothing, note with given id does not exist
+      }
+    }
+
+    inkdrop.config.set(CONFIG_NOTES_KEY, existingNoteIds.join(','));
+    return existingNoteIds;
   }
 }
