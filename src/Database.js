@@ -8,7 +8,7 @@ import { notify } from './utils';
 
 const CONFIG_NOTES_KEY = 'snippets.configNotes';
 
-export class SnippetsDatabase extends Disposable {
+export class Database extends Disposable {
   constructor() {
     super(() => this.destroy());
 

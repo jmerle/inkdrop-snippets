@@ -1,8 +1,8 @@
 'use babel';
 
 import { CompositeDisposable } from 'event-kit';
+import { Database } from './Database';
 import { Editor } from './Editor';
-import { SnippetsDatabase } from './SnippetsDatabase';
 
 let database = null;
 let editor = null;
@@ -19,7 +19,7 @@ export const config = {
 };
 
 export function activate() {
-  database = new SnippetsDatabase();
+  database = new Database();
   subscriptions = new CompositeDisposable();
 
   const activeEditor = inkdrop.getActiveEditor();
