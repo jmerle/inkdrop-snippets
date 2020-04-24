@@ -93,7 +93,7 @@ export class Editor extends Disposable {
       ch: cursor.ch - this.maxTriggerLength,
     };
 
-    const possibleTrigger = this.cm.getRange(rangeStart, cursor);
+    const possibleTrigger = this.cm.getRange(rangeStart, cursor).toLowerCase();
 
     if (triggerToCheck !== undefined) {
       if (possibleTrigger.endsWith(triggerToCheck)) {
