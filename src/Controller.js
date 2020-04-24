@@ -1,21 +1,25 @@
 'use babel';
 
 import { Disposable, CompositeDisposable } from 'event-kit';
-import { SnippetsDatabase } from './SnippetsDatabase';
 
 export class Controller extends Disposable {
-  constructor(cm) {
+  constructor(cm, database) {
     super(() => this.destroy());
 
     this.cm = cm;
+    this.database = database;
     this.commandListeners = new CompositeDisposable();
-    this.database = new SnippetsDatabase();
 
     this.refresh();
   }
 
   destroy() {
     this.commandListeners.dispose();
+  }
+
+  setCodeMirror(cm) {
+    this.cm = cm;
+    this.refresh();
   }
 
   refresh() {
@@ -27,11 +31,18 @@ export class Controller extends Disposable {
       .map(trigger => trigger.length)
       .sort((a, b) => b - a)[0];
 
+    // Ensure enough characters are checked when Space is used as trigger key
+    this.maxTriggerLength += 1;
+
     this.registerCommands();
   }
 
   registerCommands() {
-    this.registerCommand('trigger', event => this.trigger(event));
+    this.registerCommand('trigger', () => this.run());
+
+    for (const trigger of this.triggers) {
+      this.registerCommand(`trigger-${trigger}`, () => this.run(trigger));
+    }
   }
 
   registerCommand(command, cb) {
@@ -51,6 +62,10 @@ export class Controller extends Disposable {
           // without making it impossible to trigger other commands with it
           // it as well. This is important because the Tab key is also used by
           // several other rather important commands like `editor:indent`.
+
+          if (!(event.originalEvent instanceof KeyboardEvent)) {
+            return;
+          }
 
           const { keymaps } = inkdrop;
           const keyboardEvent = event.originalEvent;
@@ -78,7 +93,7 @@ export class Controller extends Disposable {
     );
   }
 
-  trigger() {
+  run(triggerToCheck) {
     const cursor = this.cm.getCursor();
     const rangeStart = {
       line: cursor.line,
@@ -88,15 +103,29 @@ export class Controller extends Disposable {
           : cursor.ch - this.maxTriggerLength,
     };
 
-    const possibleTrigger = this.cm.getRange(rangeStart, cursor);
+    const possibleTrigger = this.cm.getRange(rangeStart, cursor).trim();
+
+    if (triggerToCheck !== undefined) {
+      if (possibleTrigger.endsWith(triggerToCheck)) {
+        this.runTrigger(triggerToCheck);
+        return true;
+      }
+
+      return false;
+    }
 
     for (const trigger of this.triggers) {
       if (possibleTrigger.endsWith(trigger)) {
-        console.log(`Triggering ${trigger}`);
+        this.runTrigger(trigger);
         return true;
       }
     }
 
     return false;
+  }
+
+  runTrigger(trigger) {
+    // TODO(jmerle): Implement
+    console.log(`Running snippet with trigger '${trigger}'`);
   }
 }

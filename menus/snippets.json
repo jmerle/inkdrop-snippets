@@ -1,0 +1,18 @@
+{
+  "menu": [
+    {
+      "label": "Plugins",
+      "submenu": [
+        {
+          "label": "Snippets",
+          "submenu": [
+            {
+              "label": "Create new snippets configuration",
+              "command": "snippets:new-config"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
