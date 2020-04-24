@@ -1,0 +1,5 @@
+{
+  ".CodeMirror textarea": {
+    "tab": "snippets:trigger"
+  }
+}
