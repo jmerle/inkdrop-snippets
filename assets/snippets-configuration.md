@@ -23,10 +23,11 @@ If it is a JavaScript function, its return value is used.
 If a Promise is returned, the plugin waits for the promise to resolve.
 
 The content may contain tokens like $1$ and $2$ to define placeholders.
-When a snippet is triggered, the cursor will move to the first placeholder.
+When the snippet is triggered, the cursor will move to the first placeholder.
 Placeholders can be jumped between using Tab and Shift+Tab by default.
+If no placeholders are defined, the cursor will move to the end of the content when the snippet is executed.
 
-To make working with dates easier, all functions in the date-fns package can be used in content if it is a function.
+To make working with dates easier, all functions in the date-fns package can be used in the content if it is a function.
 date-fns documentation: https://date-fns.org/docs/Getting-Started
 */
 

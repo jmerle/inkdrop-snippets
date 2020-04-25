@@ -14,7 +14,64 @@ ipm install snippets
 
 ## Usage
 
-TBD
+After installing the extension, click on Plugins > Snippets > Create new snippets configuration. This creates a new note in which snippets can be configured. Alternatively, if you already have a snippets configuration note which you want to use, simply right-click on it in the note list and select "Register as snippets configuration".
+
+Snippets configuration notes look like this:
+
+
+    ```js
+    [
+        // Example 1: static snippet which prints "Snippets"
+        {
+            trigger: 'snippet',
+            content: 'Snippets',
+        },
+
+        // Example 2: dynamic snippet which prints a formatted timestamp
+        {
+            trigger: 'timestamp',
+            content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
+        },
+
+        // Example 3: multi-line snippet with placeholders
+        {
+            trigger: 'header',
+            content: `
+    ---
+    layout: $1$
+    title: $2$
+    ---
+    $3$
+            `.trim(),
+        },
+    ];
+    ```
+
+### Trigger
+
+Type: `string`  
+Required: Yes
+
+The trigger should be the text that should activate the snippet. When the trigger is typed and the activation key is pressed (default: <kbd>Tab</kbd>), the snippet is executed and the trigger is replaced by the snippet's content.
+
+When there are multiple snippets with the same trigger, the last registered one will be used. Snippet configuration notes are read in the order of the note ids in the plugin's settings. Snippets in configuration notes are registered from top to bottom.
+
+### Content
+
+Type: `string` or `() => any` or `() => Promise<any>`  
+Required: Yes
+
+The content with which the trigger should be replaced with.
+If it is a JavaScript function, its return value is used.
+If a Promise is returned, the plugin waits for the promise to resolve.
+
+The content may contain tokens like `$1$` and `$2$` to define placeholders.
+When the snippet is executed, the cursor will move to the first placeholder.
+Placeholders can be jumped between using <kbd>Tab</kbd> and <kbd>Shift+Tab</kbd> by default. If no placeholders are defined, the cursor will move to the end of the content when the snippet is executed.
+
+To make working with dates easier, all functions in the date-fns package can be used in the content if it is a function.
+
+date-fns documentation: [https://date-fns.org/docs/Getting-Started](https://date-fns.org/docs/Getting-Started)
 
 ## Changelog
 
