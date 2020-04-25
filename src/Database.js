@@ -22,7 +22,11 @@ export class Database extends Disposable {
       .trim();
 
     this.commandListeners = new CompositeDisposable();
-    this.registerCommand('new-config', () => this.createConfigNote());
+    this.registerCommand('snippets:new-config', () => this.createConfigNote());
+    this.registerCommand('core:save-note', () => {
+      // Wait a bit so the actual save is done before calling refresh
+      setTimeout(() => this.refresh(), 250);
+    });
 
     this.refresh();
   }
@@ -34,7 +38,7 @@ export class Database extends Disposable {
   registerCommand(command, cb) {
     this.commandListeners.add(
       inkdrop.commands.add(document.body, {
-        [`snippets:${command}`]: event => cb(event),
+        [command]: event => cb(event),
       }),
     );
   }
@@ -61,7 +65,7 @@ export class Database extends Disposable {
 
         const context = {};
         const script = new vm.Script(`snippets = ${jsCode};`);
-        script.runInContext(vm.createContext(context));
+        script.runInNewContext(context);
 
         for (const snippet of context.snippets) {
           this.snippets[snippet.trigger.toLowerCase()] = snippet.content;

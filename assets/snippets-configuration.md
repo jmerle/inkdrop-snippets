@@ -1,33 +1,58 @@
 ```js
-// This note is a snippets configuration for the Snippets plugin.
-// Moving the note to trash causes all the snippets below to be deactivated.
-// Moving the note to a different notebook or renaming it will not cause problems.
+/*
+This note is a snippets configuration for the Snippets plugin.
+Moving the note to trash causes this note to be unregistered as a snippets configuration.
+Moving the note to a different notebook or renaming it will not cause problems.
+Saving the note will reload the snippets.
 
-// Snippets are configured as JavaScript objects in the array below.
-// Each snippet object should contain a "trigger" and a "content" member.
+Snippets are configured as JavaScript objects in the array below.
+Each snippet object should contain a "trigger" and a "content" member.
 
-// trigger
-// The trigger should be a string containing the text that should trigger the snippet.
-// When the trigger is typed and the activation key is pressed (default: Tab),
-// the snippet is executed and the trigger text is replaced by the snippet's content.
+trigger: string
+The trigger should be the text that should activate the snippet.
+When the trigger is typed and the activation key is pressed (default: Tab),
+the snippet is executed and the trigger is replaced by the snippet's content.
 
-// content
-// The content of the snippet with which the trigger should be replaced with when it is ran.
-// This can either be a string or a JavaScript function.
-// If it is a JavaScript function, its return value is used.
-// If a Promise is returned, the plugin waits for the promise to resolve.
+When there are multiple snippets with the same trigger, the last registered one will be used.
+Snippet configuration notes are read in the order of the note ids in the plugin's settings.
+Snippets in configuration notes are registered from top to bottom.
+
+content: string | () => any | () => Promise<any>
+The content with which the trigger should be replaced with.
+If it is a JavaScript function, its return value is used.
+If a Promise is returned, the plugin waits for the promise to resolve.
+
+The content may contain tokens like $1$ and $2$ to define placeholders.
+When a snippet is triggered, the cursor will move to the first placeholder.
+Placeholders can be jumped between using Tab and Shift+Tab by default.
+
+To make working with dates easier, all functions in the date-fns package can be used in the content function.
+date-fns documentation: https://date-fns.org/docs/Getting-Started
+*/
 
 [
-    // Example 1: static snippet which prints "Snippets" upon activation
-    {
-        trigger: 'name',
-        content: 'Snippets',
-    },
+  // Example 1: static snippet which prints "Snippets"
+  {
+    trigger: 'snippet',
+    content: 'Snippets',
+  },
 
-    // Example 2: dynamic snippet which prints the current timestamp upon activation
-    {
-        trigger: 'timestamp',
-        content: () => new Date().toISOString(),
-    },
+  // Example 2: dynamic snippet which prints a formatted timestamp
+  {
+    trigger: 'timestampp',
+    content: () => format(new Date(), 'DD-MM-yyyy at HH:mm:ss'),
+  },
+
+  // Example 3: multi-line snippet with placeholders
+  {
+    trigger: 'header',
+    content: `
+---
+layout: $1$
+title: $2$
+---
+$3$
+    `.trim(),
+  }
 ];
 ```

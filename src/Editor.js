@@ -22,6 +22,7 @@ export class Editor extends Disposable {
 
   refresh() {
     this.commandListeners.dispose();
+    this.commandListeners = new CompositeDisposable();
 
     this.triggers = this.database.getTriggers();
     this.maxTriggerLength = this.triggers
@@ -117,6 +118,8 @@ export class Editor extends Disposable {
 
   runTrigger(trigger) {
     this.cm.setOption('readOnly', true);
+
+    // TODO(jmerle): Make placeholders work
 
     this.database
       .getContent(trigger)
