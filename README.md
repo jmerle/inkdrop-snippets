@@ -16,36 +16,35 @@ ipm install snippets
 
 After installing the extension, click on Plugins > Snippets > Create new snippets configuration. This creates a new note in which snippets can be configured. Alternatively, if you already have a snippets configuration note which you want to use, simply right-click on it in the note list and select "Register as snippets configuration".
 
-Snippets configuration notes look like this:
+Snippets configuration notes look like this, where the code is surrounded by "\```js" and "\```":
 
+```js
+[
+    // Example 1: static snippet which prints "Snippets"
+    {
+        trigger: 'snippet',
+        content: 'Snippets',
+    },
 
-    ```js
-    [
-        // Example 1: static snippet which prints "Snippets"
-        {
-            trigger: 'snippet',
-            content: 'Snippets',
-        },
+    // Example 2: dynamic snippet which prints a formatted timestamp
+    {
+        trigger: 'timestamp',
+        content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
+    },
 
-        // Example 2: dynamic snippet which prints a formatted timestamp
-        {
-            trigger: 'timestamp',
-            content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
-        },
-
-        // Example 3: multi-line snippet with placeholders
-        {
-            trigger: 'header',
-            content: `
-    ---
-    layout: $1$
-    title: $2$
-    ---
-    $3$
-            `.trim(),
-        },
-    ];
-    ```
+    // Example 3: multi-line snippet with placeholders
+    {
+        trigger: 'header',
+        content: `
+---
+layout: $1$
+title: $2$
+---
+$3$
+        `.trim(),
+    },
+];
+```
 
 ### Trigger
 
