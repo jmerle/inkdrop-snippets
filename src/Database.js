@@ -3,6 +3,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vm from 'vm';
+import * as dateFns from 'date-fns';
 import { Disposable, CompositeDisposable } from 'event-kit';
 import { actions } from 'inkdrop';
 import { notify } from './utils';
@@ -63,7 +64,7 @@ export class Database extends Disposable {
           body.length - '```'.length - 1,
         );
 
-        const context = {};
+        const context = { ...dateFns };
         const script = new vm.Script(`snippets = ${jsCode};`);
         script.runInNewContext(context);
 

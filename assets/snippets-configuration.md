@@ -26,7 +26,7 @@ The content may contain tokens like $1$ and $2$ to define placeholders.
 When a snippet is triggered, the cursor will move to the first placeholder.
 Placeholders can be jumped between using Tab and Shift+Tab by default.
 
-To make working with dates easier, all functions in the date-fns package can be used in the content function.
+To make working with dates easier, all functions in the date-fns package can be used in content if it is a function.
 date-fns documentation: https://date-fns.org/docs/Getting-Started
 */
 
@@ -39,8 +39,8 @@ date-fns documentation: https://date-fns.org/docs/Getting-Started
 
   // Example 2: dynamic snippet which prints a formatted timestamp
   {
-    trigger: 'timestampp',
-    content: () => format(new Date(), 'DD-MM-yyyy at HH:mm:ss'),
+    trigger: 'timestamp',
+    content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
   },
 
   // Example 3: multi-line snippet with placeholders

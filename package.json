@@ -13,7 +13,9 @@
     "fix:eslint": "yarn lint:eslint --fix",
     "fix:prettier": "prettier --write --ignore-path .gitignore '**/*.{less,yml,json}'"
   },
-  "dependencies": {},
+  "dependencies": {
+    "date-fns": "^2.12.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
