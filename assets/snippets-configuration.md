@@ -1,6 +1,6 @@
 ```js
 /*
-This note is a snippets configuration for the Snippets plugin.
+This note is a configuration note for the Snippets plugin.
 Moving the note to trash causes this note to be unregistered as a snippets configuration.
 Moving the note to a different notebook or renaming it will not cause problems.
 Saving the note will reload the snippets.

@@ -11,8 +11,7 @@ let subscriptions = null;
 export const config = {
   configNotes: {
     title: 'Configuration notes',
-    description:
-      'Comma-separated list of note ids of notes containing snippet configurations',
+    description: 'Comma-separated list of note ids of configuration notes',
     type: 'string',
     default: '',
   },

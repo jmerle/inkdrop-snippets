@@ -7,7 +7,7 @@
           "label": "Snippets",
           "submenu": [
             {
-              "label": "Create new snippets configuration",
+              "label": "Create new configuration note",
               "command": "snippets:new-config"
             }
           ]

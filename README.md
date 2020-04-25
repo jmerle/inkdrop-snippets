@@ -16,7 +16,7 @@ ipm install snippets
 
 After installing the extension, click on Plugins > Snippets > Create new configuration note. This creates a new note in which snippets can be configured. Alternatively, if you already have a configuration note which you want to use, simply right-click on it in the note list and select "Register as snippets configuration". This can be reverted by right-clicking on the note again and selecting "Unregister as snippets configuration".
 
-Snippet configuration is done in JavaScript, with configuration notes looking like this (surrounded by "\```js" and "\```"):
+Snippets configuration is done in JavaScript with configuration notes looking like this (surrounded by "\```js" and "\```"):
 
 ```js
 [
