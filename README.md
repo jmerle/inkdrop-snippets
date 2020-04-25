@@ -61,7 +61,7 @@ Type: `string` or `() => any` or `() => Promise<any>`
 Required: Yes
 
 The content with which the trigger should be replaced with.
-If it is a JavaScript function, its return value is used.
+If it is a JavaScript function, it is called with the current selection and the return value is used as content.
 If a Promise is returned, the plugin waits for the promise to resolve.
 
 The content may contain tokens like `$1$` and `$2$` to define placeholders.

@@ -102,12 +102,13 @@ export class Database extends Disposable {
     return Object.keys(this.snippets);
   }
 
-  getContent(trigger) {
+  getContent(trigger, selection) {
     const content = this.snippets[trigger];
 
     return new Promise((resolve, reject) => {
       try {
-        const result = typeof content === 'function' ? content() : content;
+        const result =
+          typeof content === 'function' ? content(selection) : content;
 
         Promise.resolve(result)
           .then(actualContent => resolve(`${actualContent}`))

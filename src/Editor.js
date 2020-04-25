@@ -116,7 +116,7 @@ export class Editor extends Disposable {
     // TODO(jmerle): Make placeholders work
 
     this.database
-      .getContent(trigger)
+      .getContent(trigger, this.cm.getSelection())
       .then(content => {
         if (replace) {
           const cursor = this.cm.getCursor();
