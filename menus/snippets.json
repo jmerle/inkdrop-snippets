@@ -14,5 +14,13 @@
         }
       ]
     }
-  ]
+  ],
+  "context-menu": {
+    ".note-list-item-view": [
+      {
+        "label": "(Un)register as snippets configuration",
+        "command": "snippets:toggle-config"
+      }
+    ]
+  }
 }

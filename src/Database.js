@@ -26,6 +26,14 @@ export class Database extends Disposable {
 
     this.registerCommand('snippets:new-config', () => this.createConfigNote());
 
+    this.registerCommand('snippets:toggle-config', () => {
+      const { noteListBar } = inkdrop.store.getState();
+
+      for (const noteId of noteListBar.actionTargetNoteIds) {
+        this.toggleConfigNote(noteId);
+      }
+    });
+
     this.registerCommand('core:save-note', () => {
       // Wait a bit so the actual save is done before calling refresh
       this.refreshAfter(250);
@@ -58,8 +66,10 @@ export class Database extends Disposable {
     const noteIds = await this.getConfigNoteIds();
 
     for (const noteId of noteIds) {
+      let note = null;
+
       try {
-        const note = await db.notes.get(noteId);
+        note = await db.notes.get(noteId);
         const body = note.body.trim();
 
         if (body === '') {
@@ -67,7 +77,11 @@ export class Database extends Disposable {
         }
 
         if (!body.startsWith('```js') || !body.endsWith('```')) {
-          notify('Error', `Note '${noteId}' is not a valid snippets config`);
+          notify(
+            'Error',
+            `Note '${note.title}' is not a valid snippets configuration`,
+          );
+
           continue;
         }
 
@@ -84,7 +98,8 @@ export class Database extends Disposable {
           this.snippets[snippet.trigger.toLowerCase()] = snippet.content;
         }
       } catch (err) {
-        notify('Error', `Could not load snippets from note '${noteId}'`);
+        const name = note === null ? noteId : note.title;
+        notify('Error', `Could not load snippets from note '${name}'`);
         console.error(err);
       }
     }
@@ -147,7 +162,10 @@ export class Database extends Disposable {
           inkdrop.commands.dispatch(document.body, 'core:save-note');
 
           const { editingNote } = inkdrop.store.getState();
-          this.registerConfigNote(editingNote._id);
+
+          const noteIds = await this.getConfigNoteIds();
+          noteIds.push(editingNote._id);
+          this.setConfigNoteIds(noteIds);
         } catch (err) {
           notify('Error', 'Could not create new snippets configuration');
           console.error(err);
@@ -158,10 +176,28 @@ export class Database extends Disposable {
     inkdrop.commands.dispatch(document.body, 'core:new-note');
   }
 
-  async registerConfigNote(noteId) {
-    const noteIds = await this.getConfigNoteIds();
-    noteIds.push(noteId);
-    inkdrop.config.set(CONFIG_NOTES_KEY, noteIds.join(','));
+  async toggleConfigNote(noteId) {
+    let noteIds = await this.getConfigNoteIds();
+    let status;
+
+    if (noteIds.includes(noteId)) {
+      noteIds = noteIds.filter(id => id !== noteId);
+      status = 'unregistered';
+    } else {
+      noteIds.push(noteId);
+      status = 'registered';
+    }
+
+    const db = inkdrop.main.dataStore.getLocalDB();
+    const note = await db.notes.get(noteId);
+
+    this.setConfigNoteIds(noteIds);
+    notify(
+      'Success',
+      `Successfully ${status} note '${note.title}' as snippets configuration`,
+    );
+
+    this.refresh();
   }
 
   async getConfigNoteIds() {
@@ -185,5 +221,9 @@ export class Database extends Disposable {
 
     inkdrop.config.set(CONFIG_NOTES_KEY, existingNoteIds.join(','));
     return existingNoteIds;
+  }
+
+  setConfigNoteIds(noteIds) {
+    inkdrop.config.set(CONFIG_NOTES_KEY, noteIds.join(','));
   }
 }
