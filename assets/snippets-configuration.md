@@ -27,7 +27,7 @@ When the snippet is triggered, the cursor will move to the first placeholder.
 Placeholders can be jumped between using Tab and Shift+Tab by default.
 If no placeholders are defined, the cursor will move to the end of the content when the snippet is executed.
 
-To make working with dates easier, all functions in the date-fns package can be used in the content if it is a function.
+To make working with dates easier, all functions in the date-fns package are available.
 date-fns documentation: https://date-fns.org/docs/Getting-Started
 */
 

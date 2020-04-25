@@ -68,9 +68,22 @@ The content may contain tokens like `$1$` and `$2$` to define placeholders.
 When the snippet is executed, the cursor will move to the first placeholder.
 Placeholders can be jumped between using <kbd>Tab</kbd> and <kbd>Shift+Tab</kbd> by default. If no placeholders are defined, the cursor will move to the end of the content when the snippet is executed.
 
-To make working with dates easier, all functions in the date-fns package can be used in the content if it is a function.
+To make working with dates easier, all functions in the date-fns package are available.
 
 date-fns documentation: [https://date-fns.org/docs/Getting-Started](https://date-fns.org/docs/Getting-Started)
+
+## Commands
+
+The following commands are available:
+
+| Command                          | Description                                                | Default keybinding                |
+| -------------------------------- | ---------------------------------------------------------- | --------------------------------- |
+| `snippets:run`                   | Checks if typed text matches a trigger, runs snippet if so | <kbd>Tab</kbd>                    |
+| `snippets:run-<snippet trigger>` | Runs snippet with given trigger                            |                                   |
+| `snippets:next-placeholder`      | Moves cursor to next placeholder                           | <kbd>Tab</kbd>                    |
+| `snippets:previous-placeholder`  | Moves cursor to previous placeholder                       | <kbd>Shift</kbd> + <kbd>Tab</kbd> |
+
+Keybindings bound to `snippets:*` commands fall through. This means that even while <kbd>Tab</kbd> is bound to `snippets:run` by default, if no trigger has been typed the next command bound to <kbd>Tab</kbd> will be ran (usually `editor:indent`).
 
 ## Changelog
 

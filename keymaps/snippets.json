@@ -1,5 +1,5 @@
 {
   ".CodeMirror textarea": {
-    "tab": "snippets:trigger"
+    "tab": "snippets:run"
   }
 }

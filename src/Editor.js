@@ -33,10 +33,13 @@ export class Editor extends Disposable {
   }
 
   registerCommands() {
-    this.registerCommand('trigger', () => this.run());
+    this.registerCommand('run', () => this.run());
 
     for (const trigger of this.triggers) {
-      this.registerCommand(`trigger-${trigger}`, () => this.run(trigger));
+      this.registerCommand(`run-${trigger}`, () => {
+        this.runTrigger(trigger, false);
+        return true;
+      });
     }
   }
 
@@ -88,7 +91,7 @@ export class Editor extends Disposable {
     );
   }
 
-  run(triggerToCheck) {
+  run() {
     const cursor = this.cm.getCursor();
     const rangeStart = {
       line: cursor.line,
@@ -97,18 +100,9 @@ export class Editor extends Disposable {
 
     const possibleTrigger = this.cm.getRange(rangeStart, cursor).toLowerCase();
 
-    if (triggerToCheck !== undefined) {
-      if (possibleTrigger.endsWith(triggerToCheck)) {
-        this.runTrigger(triggerToCheck);
-        return true;
-      }
-
-      return false;
-    }
-
     for (const trigger of this.triggers) {
       if (possibleTrigger.endsWith(trigger)) {
-        this.runTrigger(trigger);
+        this.runTrigger(trigger, true);
         return true;
       }
     }
@@ -116,7 +110,7 @@ export class Editor extends Disposable {
     return false;
   }
 
-  runTrigger(trigger) {
+  runTrigger(trigger, replace) {
     this.cm.setOption('readOnly', true);
 
     // TODO(jmerle): Make placeholders work
@@ -124,13 +118,17 @@ export class Editor extends Disposable {
     this.database
       .getContent(trigger)
       .then(content => {
-        const cursor = this.cm.getCursor();
-        const rangeStart = {
-          line: cursor.line,
-          ch: cursor.ch - trigger.length,
-        };
+        if (replace) {
+          const cursor = this.cm.getCursor();
+          const rangeStart = {
+            line: cursor.line,
+            ch: cursor.ch - trigger.length,
+          };
 
-        this.cm.replaceRange(content, rangeStart, cursor);
+          this.cm.replaceRange(content, rangeStart, cursor);
+        } else {
+          this.cm.replaceSelection(content);
+        }
       })
       .catch(err => {
         notify('Error', `Snippet '${trigger}' failed: ${err.message}`);
