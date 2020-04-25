@@ -32,28 +32,28 @@ date-fns documentation: https://date-fns.org/docs/Getting-Started
 */
 
 [
-  // Example 1: static snippet which prints "Snippets"
-  {
-    trigger: 'snippet',
-    content: 'Snippets',
-  },
+    // Example 1: static snippet which prints "Snippets"
+    {
+        trigger: 'snippet',
+        content: 'Snippets',
+    },
 
-  // Example 2: dynamic snippet which prints a formatted timestamp
-  {
-    trigger: 'timestamp',
-    content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
-  },
+    // Example 2: dynamic snippet which prints a formatted timestamp
+    {
+        trigger: 'timestamp',
+        content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
+    },
 
-  // Example 3: multi-line snippet with placeholders
-  {
-    trigger: 'header',
-    content: `
+    // Example 3: multi-line snippet with placeholders
+    {
+        trigger: 'header',
+        content: `
 ---
 layout: $1$
 title: $2$
 ---
 $3$
-    `.trim(),
-  }
+        `.trim(),
+    },
 ];
 ```

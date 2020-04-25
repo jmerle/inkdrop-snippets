@@ -23,10 +23,17 @@ export class Database extends Disposable {
       .trim();
 
     this.commandListeners = new CompositeDisposable();
+
     this.registerCommand('snippets:new-config', () => this.createConfigNote());
+
     this.registerCommand('core:save-note', () => {
       // Wait a bit so the actual save is done before calling refresh
-      setTimeout(() => this.refresh(), 250);
+      this.refreshAfter(250);
+    });
+
+    this.registerCommand('core:delete-note', () => {
+      // Wait a bit so the note is actually deleted before calling refresh
+      this.refreshAfter(250);
     });
 
     this.refresh();
@@ -55,8 +62,13 @@ export class Database extends Disposable {
         const note = await db.notes.get(noteId);
         const body = note.body.trim();
 
+        if (body === '') {
+          continue;
+        }
+
         if (!body.startsWith('```js') || !body.endsWith('```')) {
           notify('Error', `Note '${noteId}' is not a valid snippets config`);
+          continue;
         }
 
         const jsCode = body.substring(
@@ -80,6 +92,10 @@ export class Database extends Disposable {
     if (this.editor !== null) {
       this.editor.refresh();
     }
+  }
+
+  refreshAfter(ms) {
+    setTimeout(() => this.refresh(), ms);
   }
 
   getTriggers() {
@@ -151,9 +167,7 @@ export class Database extends Disposable {
     const db = inkdrop.main.dataStore.getLocalDB();
 
     const configNotes = inkdrop.config.get(CONFIG_NOTES_KEY);
-    const noteIds = (configNotes || '')
-      .split(',')
-      .filter(x => db.notes.validateDocId(x));
+    const noteIds = (configNotes || '').split(',').filter(x => x !== '');
 
     const existingNoteIds = [];
 
