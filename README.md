@@ -59,16 +59,16 @@ When there are multiple snippets with the same trigger, the last registered one 
 
 ### Content
 
-Type: `string` or `() => any` or `() => Promise<any>`  
+Type: `string` or `() => string` or `() => Promise<string>`  
 Required: Yes
 
 The content with which the trigger should be replaced with.
 If it is a JavaScript function, it is called with the current selection and the return value is used as content.
 If a Promise is returned, the plugin waits for the promise to resolve.
 
-The content may contain tokens like `$1$` and `$2$` to define placeholders. Placeholders can contain default values by defining them like `$1:Default value$`. When the snippet is executed, the cursor will move to the first placeholder. Placeholders can be jumped between using <kbd>Tab</kbd> and <kbd>Shift+Tab</kbd> by default. If no placeholders are defined, the cursor will move to the end of the content when the snippet is executed.
+The content may contain tokens like `$1$` and `$2$` to define placeholders. Placeholders can contain default values by defining them like `$1:Default value$`. When the snippet is executed, the cursor will move to the first placeholder. Placeholders can be jumped between with <kbd>Tab</kbd> and <kbd>Shift+Tab</kbd> by default. If no placeholders are defined, the cursor will move to the end of the content when the snippet is executed.
 
-To make working with dates easier, all functions in the [date-fns](https://date-fns.org/) library are available.
+To make working with `Date` objects easier, all functions from the [date-fns](https://date-fns.org/) library are available.
 
 ## Commands
 
