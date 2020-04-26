@@ -22,7 +22,7 @@ https://github.com/jmerle/inkdrop-snippets#usage
         content: () => format(new Date(), 'dd-MM-yyyy'),
     },
 
-    // Example 3: snippet with placeholders
+    // Example 3: static snippet with placeholders
     {
         trigger: 'name',
         content: 'My first name is $1:John$ and my last name is $2$',

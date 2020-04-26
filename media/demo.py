@@ -55,7 +55,7 @@ simulate_typing('date')
 tab()
 new_section()
 
-simulate_typing('Placeholders:')
+simulate_typing('Static snippet with placeholders:')
 enter()
 simulate_typing('name')
 tab()
