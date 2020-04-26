@@ -22,13 +22,13 @@ Snippets configuration is done in JavaScript with configuration notes looking li
 
 ```js
 [
-    // Example 1: static snippet which prints "Hello, world!"
+    // Example 1: static snippet
     {
         trigger: 'hello',
         content: 'Hello, world!',
     },
 
-    // Example 2: dynamic snippet which prints the current date
+    // Example 2: dynamic snippet
     {
         trigger: 'date',
         content: () => format(new Date(), 'dd-MM-yyyy'),
