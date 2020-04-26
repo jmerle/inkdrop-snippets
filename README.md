@@ -32,13 +32,13 @@ Snippets configuration is done in JavaScript with configuration notes looking li
         content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
     },
 
-    // Example 3: multi-line snippet with placeholders
+    // Example 3: multi-line snippet with placeholders and a default value
     {
         trigger: 'header',
         content: `
 ---
-layout: $1$
-title: $2$
+layout: $2:none$
+title: $1$
 ---
 $3$
         `.trim(),
@@ -65,6 +65,7 @@ If it is a JavaScript function, it is called with the current selection and the 
 If a Promise is returned, the plugin waits for the promise to resolve.
 
 The content may contain tokens like `$1$` and `$2$` to define placeholders.
+Placeholders can contain default values by defining them like `$1:Default value comes here$`.
 When the snippet is executed, the cursor will move to the first placeholder.
 Placeholders can be jumped between using <kbd>Tab</kbd> and <kbd>Shift+Tab</kbd> by default. If no placeholders are defined, the cursor will move to the end of the content when the snippet is executed.
 
@@ -74,12 +75,12 @@ To make working with dates easier, all functions in the [date-fns](https://date-
 
 The following commands are available:
 
-| Command                         | Description                                                | Default keybinding                |
-| ------------------------------- | ---------------------------------------------------------- | --------------------------------- |
-| `snippets:run`                  | Checks if typed text matches a trigger, runs snippet if so | <kbd>Tab</kbd>                    |
-| `snippets:run-<trigger>`        | Runs snippet with given trigger                            |                                   |
-| `snippets:next-placeholder`     | Moves cursor to next placeholder                           | <kbd>Tab</kbd>                    |
-| `snippets:previous-placeholder` | Moves cursor to previous placeholder                       | <kbd>Shift</kbd> + <kbd>Tab</kbd> |
+| Command                         | Description                                                | Default keybinding                     |
+| ------------------------------- | ---------------------------------------------------------- | -------------------------------------- |
+| `snippets:run`                  | Checks if typed text matches a trigger, runs snippet if so | <kbd>Tab</kbd>                         |
+| `snippets:run-<trigger>`        | Runs snippet with given trigger                            |                                        |
+| `snippets:next-placeholder`     | Moves cursor to next placeholder                           | The keybinding bound to `snippets:run` |
+| `snippets:previous-placeholder` | Moves cursor to previous placeholder                       | <kbd>Shift</kbd> + <kbd>Tab</kbd>      |
 
 Keybindings bound to `snippets:*` commands fall through. This means that even while <kbd>Tab</kbd> is bound to `snippets:run` by default, if no trigger has been typed the next command bound to <kbd>Tab</kbd> will be ran (usually `editor:indent`).
 

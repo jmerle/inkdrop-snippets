@@ -75,7 +75,13 @@
       "dist/"
     ],
     "rules": {
-      "prettier/prettier": "error"
+      "prettier/prettier": "error",
+      "no-constant-condition": [
+        "error",
+        {
+          "checkLoops": false
+        }
+      ]
     }
   },
   "husky": {

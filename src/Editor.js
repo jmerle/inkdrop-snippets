@@ -13,6 +13,15 @@ export class Editor extends Disposable {
 
     this.database.editor = this;
 
+    this.markers = [];
+    this.currentMarker = -1;
+    this.clearMarkersOnChange = false;
+
+    this.cm.on('change', () => this.onChange());
+    this.cm.on('beforeChange', (_, changeObj) => {
+      this.onBeforeChange(changeObj);
+    });
+
     this.refresh();
   }
 
@@ -34,6 +43,14 @@ export class Editor extends Disposable {
 
   registerCommands() {
     this.registerCommand('run', () => this.run());
+
+    this.registerCommand('next-placeholder', () => {
+      return this.moveToNextPlaceholder();
+    });
+
+    this.registerCommand('previous-placeholder', () => {
+      return this.moveToPreviousPlaceholder();
+    });
 
     for (const trigger of this.triggers) {
       this.registerCommand(`run-${trigger}`, () => {
@@ -107,28 +124,16 @@ export class Editor extends Disposable {
       }
     }
 
-    return false;
+    return this.moveToNextPlaceholder();
   }
 
   runTrigger(trigger, replace) {
     this.cm.setOption('readOnly', true);
 
-    // TODO(jmerle): Make placeholders work
-
     this.database
       .getContent(trigger, this.cm.getSelection())
       .then(content => {
-        if (replace) {
-          const cursor = this.cm.getCursor();
-          const rangeStart = {
-            line: cursor.line,
-            ch: cursor.ch - trigger.length,
-          };
-
-          this.cm.replaceRange(content, rangeStart, cursor);
-        } else {
-          this.cm.replaceSelection(content);
-        }
+        this.placeContent(content, trigger, replace);
       })
       .catch(err => {
         notify('Error', `Snippet '${trigger}' failed: ${err.message}`);
@@ -137,5 +142,170 @@ export class Editor extends Disposable {
       .finally(() => {
         this.cm.setOption('readOnly', false);
       });
+  }
+
+  placeContent(content, trigger, replace) {
+    this.clearMarkers();
+    const { processedContent, placeholders } = this.processContent(content);
+
+    let startPosition;
+
+    if (replace) {
+      const cursor = this.cm.getCursor();
+      startPosition = {
+        line: cursor.line,
+        ch: trigger.length > cursor.ch ? 0 : cursor.ch - trigger.length,
+      };
+
+      this.cm.replaceRange(processedContent, startPosition, cursor);
+    } else {
+      startPosition = this.cm.listSelections()[0].head;
+      this.cm.replaceSelection(processedContent);
+    }
+
+    const startIndex = this.cm.indexFromPos(startPosition);
+
+    for (const placeholder of placeholders) {
+      const start = this.cm.posFromIndex(startIndex + placeholder.start);
+      const end = this.cm.posFromIndex(startIndex + placeholder.end);
+
+      const marker = this.cm.markText(start, end, {
+        className: 'snippets-placeholder',
+        inclusiveLeft: true,
+        inclusiveRight: true,
+      });
+
+      this.markers.push(marker);
+    }
+
+    this.moveToNextPlaceholder();
+  }
+
+  processContent(content) {
+    const placeholders = [];
+    const placeholderPattern = /((?<!\\)\$(\d+)(:[^$]*)?\$)/;
+
+    while (true) {
+      const match = content.match(placeholderPattern);
+
+      if (match === null) {
+        break;
+      }
+
+      const index = parseInt(match[2], 10);
+
+      let placeholderValue = match[3];
+      if (placeholderValue === undefined || placeholderValue === ':') {
+        placeholderValue = `$${index}`;
+      } else {
+        placeholderValue = placeholderValue.substr(1);
+      }
+
+      const start = match.index;
+      const end = start + placeholderValue.length;
+
+      placeholders.push({ index, start, end });
+
+      const prefix = content.substr(0, start);
+      const suffix = content.substr(start + match[0].length);
+      content = prefix + placeholderValue + suffix;
+    }
+
+    const orderedPlaceholders = placeholders
+      .sort((a, b) => a.index - b.index)
+      .map(placeholder => ({ start: placeholder.start, end: placeholder.end }));
+
+    return {
+      processedContent: content,
+      placeholders: orderedPlaceholders,
+    };
+  }
+
+  onBeforeChange(changeObj) {
+    this.clearMarkersOnChange = false;
+
+    if (this.markers.length === 0) {
+      return;
+    }
+
+    let modifiedMarker = false;
+    const changeFrom = this.cm.indexFromPos(changeObj.from);
+
+    for (const marker of this.markers) {
+      const range = marker.find();
+
+      if (range === undefined) {
+        continue;
+      }
+
+      const rangeFrom = this.cm.indexFromPos(range.from);
+      const rangeTo = this.cm.indexFromPos(range.to);
+
+      if (changeFrom >= rangeFrom && changeFrom <= rangeTo) {
+        marker.className = '';
+        marker.modified = true;
+        modifiedMarker = true;
+        break;
+      }
+    }
+
+    if (!modifiedMarker) {
+      this.clearMarkersOnChange = true;
+    }
+  }
+
+  onChange() {
+    if (this.clearMarkersOnChange) {
+      this.clearMarkersOnChange = false;
+      this.clearMarkers();
+    }
+  }
+
+  moveToNextPlaceholder() {
+    for (let i = this.currentMarker + 1; i < this.markers.length; i++) {
+      if (this.moveToPlaceholder(i)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  moveToPreviousPlaceholder() {
+    for (let i = this.currentMarker - 1; i >= 0; i--) {
+      if (this.moveToPlaceholder(i)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  moveToPlaceholder(markerIndex) {
+    const marker = this.markers[markerIndex];
+
+    if (marker.modified) {
+      return false;
+    }
+
+    const range = marker.find();
+
+    if (range === undefined) {
+      return false;
+    }
+
+    this.cm.setSelection(range.to, range.from);
+    this.currentMarker = markerIndex;
+
+    return true;
+  }
+
+  clearMarkers() {
+    for (const marker of this.markers) {
+      marker.clear();
+    }
+
+    this.markers = [];
+    this.currentMarker = -1;
   }
 }

@@ -1,5 +1,6 @@
 {
   ".CodeMirror textarea": {
-    "tab": "snippets:run"
+    "tab": "snippets:run",
+    "shift-tab": "snippets:previous-placeholder"
   }
 }
