@@ -4,6 +4,8 @@
 [![Latest release](https://img.shields.io/github/v/release/jmerle/inkdrop-snippets)](https://my.inkdrop.app/plugins/snippets)
 [![License](https://img.shields.io/github/license/jmerle/inkdrop-snippets)](https://github.com/jmerle/inkdrop-snippets/blob/master/LICENSE)
 
+![](./media/demo.gif)
+
 This plugin makes it easy to create and use snippets inside Inkdrop notes.
 
 ## Install
@@ -32,7 +34,7 @@ Snippets configuration is done in JavaScript with configuration notes looking li
         content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
     },
 
-    // Example 3: multi-line snippet with placeholders and a default value
+    // Example 3: multi-line snippet with placeholders
     {
         trigger: 'header',
         content: `

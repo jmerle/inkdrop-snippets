@@ -22,7 +22,7 @@ https://github.com/jmerle/inkdrop-snippets#usage
         content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
     },
 
-    // Example 3: multi-line snippet with placeholders and a default value
+    // Example 3: multi-line snippet with placeholders
     {
         trigger: 'header',
         content: `
