@@ -30,6 +30,7 @@ https://github.com/jmerle/inkdrop-snippets#usage
 layout: $2:none$
 title: $1$
 ---
+
 $3$
         `.trim(),
     },
