@@ -16,15 +16,15 @@ Make sure the following snippets are registered:
     },
 
     {
-        trigger: 'day',
+        trigger: 'date',
         content: () => format(new Date(), 'dd-MM-yyyy'),
     },
 
     {
         trigger: 'name',
         content: 'My first name is $1:John$ and my last name is $2$',
-    }
-]
+    },
+];
 ```
 
 After that, follow these steps:

@@ -51,7 +51,7 @@ new_section()
 
 simulate_typing('Dynamic snippet:')
 enter()
-simulate_typing('day')
+simulate_typing('date')
 tab()
 new_section()
 

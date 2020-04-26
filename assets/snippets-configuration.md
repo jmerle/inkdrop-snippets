@@ -10,29 +10,22 @@ https://github.com/jmerle/inkdrop-snippets#usage
 */
 
 [
-    // Example 1: static snippet which prints "Snippets"
+    // Example 1: static snippet which prints "Hello, world!"
     {
-        trigger: 'snippet',
-        content: 'Snippets',
+        trigger: 'hello',
+        content: 'Hello, world!',
     },
 
     // Example 2: dynamic snippet which prints a formatted timestamp
     {
-        trigger: 'timestamp',
-        content: () => format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
+        trigger: 'day',
+        content: () => format(new Date(), 'dd-MM-yyyy'),
     },
 
-    // Example 3: multi-line snippet with placeholders
+    // Example 3: snippet with placeholders
     {
-        trigger: 'header',
-        content: `
----
-layout: $2:none$
-title: $1$
----
-
-$3$
-        `.trim(),
+        trigger: 'name',
+        content: 'My first name is $1:John$ and my last name is $2$',
     },
 ];
 ```
