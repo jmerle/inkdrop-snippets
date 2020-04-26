@@ -43,7 +43,7 @@ enter()
 simulate_typing('Magic!')
 new_section()
 
-simulate_typing('Simple snippet:')
+simulate_typing('Static snippet:')
 enter()
 simulate_typing('hello')
 tab()
