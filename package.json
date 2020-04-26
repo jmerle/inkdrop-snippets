@@ -1,6 +1,6 @@
 {
   "name": "snippets",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Powerful snippets engine for Inkdrop",
   "repository": "https://github.com/jmerle/inkdrop-snippets",
   "license": "MIT",
