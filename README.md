@@ -66,7 +66,7 @@ To make working with `Date` objects easier, all functions from the [date-fns](ht
 
 ## Commands
 
-The following commands are available:
+The following commands are available, all of which should be bound to the `.CodeMirror textarea` selector:
 
 | Command                         | Description                                                | Default keybinding                     |
 | ------------------------------- | ---------------------------------------------------------- | -------------------------------------- |
