@@ -1,6 +1,6 @@
 # Snippets plugin for Inkdrop
 
-[![Build Status](https://dev.azure.com/jmerle/inkdrop-snippets/_apis/build/status/Build?branchName=master)](https://dev.azure.com/jmerle/inkdrop-snippets/_build/latest?definitionId=28&branchName=master)
+[![Build Status](https://github.com/jmerle/inkdrop-snippets/workflows/Build/badge.svg)](https://github.com/jmerle/inkdrop-snippets/actions?query=workflow%3ABuild)
 [![Latest release](https://img.shields.io/github/v/release/jmerle/inkdrop-snippets)](https://my.inkdrop.app/plugins/snippets)
 [![License](https://img.shields.io/github/license/jmerle/inkdrop-snippets)](https://github.com/jmerle/inkdrop-snippets/blob/master/LICENSE)
 
