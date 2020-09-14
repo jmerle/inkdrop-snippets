@@ -1,7 +1,8 @@
 # Snippets plugin for Inkdrop
 
 [![Build Status](https://github.com/jmerle/inkdrop-snippets/workflows/Build/badge.svg)](https://github.com/jmerle/inkdrop-snippets/actions?query=workflow%3ABuild)
-[![Latest release](https://img.shields.io/github/v/release/jmerle/inkdrop-snippets)](https://my.inkdrop.app/plugins/snippets)
+[![Latest release](https://inkdrop-plugin-badge.vercel.app/api/version/snippets?style=flat)](https://my.inkdrop.app/plugins/snippets)
+[![Downloads](https://inkdrop-plugin-badge.vercel.app/api/downloads/snippets?style=flat)](https://my.inkdrop.app/plugins/snippets)
 [![License](https://img.shields.io/github/license/jmerle/inkdrop-snippets)](https://github.com/jmerle/inkdrop-snippets/blob/master/LICENSE)
 
 ![](./media/demo.gif)
