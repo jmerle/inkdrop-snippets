@@ -43,6 +43,8 @@ Snippets configuration is done in JavaScript with configuration notes looking li
 ];
 ```
 
+A configuration note can contain arbitrary other markdown content. All javascript code blocks are parsed. This allows for easy organisation of configuration files into e.g. sections.
+
 ### Trigger
 
 Type: `string`  

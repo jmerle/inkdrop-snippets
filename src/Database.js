@@ -69,6 +69,8 @@ export class Database extends Disposable {
       let note = null;
 
       try {
+        const jsRegex = /```js\n([\s\S]*?)\n```/g;
+
         note = await db.notes.get(noteId);
         const body = note.body.trim();
 
@@ -76,7 +78,7 @@ export class Database extends Disposable {
           continue;
         }
 
-        if (!body.startsWith('```js') || !body.endsWith('```')) {
+        if (body.search(jsRegex) === -1) {
           notify(
             'Error',
             `Note '${note.title}' is not a valid snippets configuration`,
@@ -85,17 +87,16 @@ export class Database extends Disposable {
           continue;
         }
 
-        const jsCode = body.substring(
-          '```js'.length,
-          body.length - '```'.length - 1,
-        );
+        const matches = body.matchAll(jsRegex);
 
-        const context = { ...dateFns };
-        const script = new vm.Script(`snippets = ${jsCode};`);
-        script.runInNewContext(context);
+        for (const jsCode of matches) {
+          const context = { ...dateFns };
+          const script = new vm.Script(`snippets = ${jsCode[1]};`);
+          script.runInNewContext(context);
 
-        for (const snippet of context.snippets) {
-          this.snippets[snippet.trigger.toLowerCase()] = snippet.content;
+          for (const snippet of context.snippets) {
+            this.snippets[snippet.trigger.toLowerCase()] = snippet.content;
+          }
         }
       } catch (err) {
         const name = note === null ? noteId : note.title;
