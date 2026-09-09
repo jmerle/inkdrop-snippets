@@ -10,6 +10,10 @@ import { notify } from './utils';
 
 const CONFIG_NOTES_KEY = 'snippets.configNotes';
 
+function getLocalDB() {
+  return inkdrop.localDB;
+}
+
 export class Database extends Disposable {
   constructor() {
     super(() => this.destroy());
@@ -62,7 +66,7 @@ export class Database extends Disposable {
   async refresh() {
     this.snippets = {};
 
-    const db = inkdrop.main.dataStore.getLocalDB();
+    const db = getLocalDB();
     const noteIds = await this.getConfigNoteIds();
 
     for (const noteId of noteIds) {
@@ -189,7 +193,7 @@ export class Database extends Disposable {
       status = 'registered';
     }
 
-    const db = inkdrop.main.dataStore.getLocalDB();
+    const db = getLocalDB();
     const note = await db.notes.get(noteId);
 
     this.setConfigNoteIds(noteIds);
@@ -202,7 +206,7 @@ export class Database extends Disposable {
   }
 
   async getConfigNoteIds() {
-    const db = inkdrop.main.dataStore.getLocalDB();
+    const db = getLocalDB();
 
     const configNotes = inkdrop.config.get(CONFIG_NOTES_KEY);
     const noteIds = (configNotes || '').split(',').filter(x => x !== '');

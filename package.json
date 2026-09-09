@@ -8,12 +8,14 @@
   "scripts": {
     "lint": "yarn lint:eslint && yarn lint:prettier",
     "lint:eslint": "eslint --format codeframe 'src/**'",
-    "lint:prettier": "prettier --check --ignore-path .gitignore '**/*.{js,less,yml,json}'",
+    "lint:prettier": "prettier --check --ignore-path .gitignore '**/*.{js,css,yml,json}'",
     "fix": "yarn fix:eslint && yarn fix:prettier",
     "fix:eslint": "yarn lint:eslint --fix",
-    "fix:prettier": "prettier --write --ignore-path .gitignore '**/*.{js,less,yml,json}'"
+    "fix:prettier": "prettier --write --ignore-path .gitignore '**/*.{js,css,yml,json}'"
   },
   "dependencies": {
+    "@codemirror/state": "^6.7.1",
+    "@codemirror/view": "^6.43.6",
     "date-fns": "^2.28.0"
   },
   "devDependencies": {
@@ -21,6 +23,7 @@
     "@babel/eslint-parser": "^7.18.2",
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-react": "^7.17.12",
+    "@inkdropapp/types": "^0.0.12",
     "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-formatter-codeframe": "^7.32.1",
@@ -31,7 +34,7 @@
     "rimraf": "^3.0.2"
   },
   "engines": {
-    "inkdrop": "^5.x"
+    "inkdrop": "^6.x"
   },
   "babel": {
     "presets": [
@@ -90,7 +93,7 @@
     "*.js": [
       "eslint --format codeframe --fix"
     ],
-    "*.{js,less,yml,json}": [
+    "*.{js,css,yml,json}": [
       "prettier --write"
     ]
   },

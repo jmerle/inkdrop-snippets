@@ -1,5 +1,5 @@
 {
-  ".CodeMirror textarea": {
+  ".cm-editor .cm-scroller": {
     "tab": "snippets:run",
     "shift-tab": "snippets:previous-placeholder"
   }
